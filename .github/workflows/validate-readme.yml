@@ -1,0 +1,35 @@
+name: Validate README Markers
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - README.md
+      - ".github/workflows/**"
+
+permissions:
+  contents: read
+
+jobs:
+  validate-readme:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check README activity markers
+        shell: bash
+        run: |
+          if ! grep -q '<!-- ACTIVITY:START -->' README.md; then
+            echo "ERROR: ACTIVITY:START marker is missing."
+            exit 1
+          fi
+
+          if ! grep -q '<!-- ACTIVITY:END -->' README.md; then
+            echo "ERROR: ACTIVITY:END marker is missing."
+            exit 1
+          fi
+
+          echo "README activity markers are valid."
